@@ -95,9 +95,9 @@ module.exports = {
                             cantidad: datos.cantidad,
                             createdAt: new Date()
                         }
-                        Ventas.create(datos_venta)
+                        Ventas.create(datos_venta) 
                             .then(async ventas => {
-                                const options1 = {
+                                const options = {
                                     'method': 'PUT',
                                     'url': `http://localhost:8081/api/tanquegasolinasUpdate`,
                                     'headers': {
@@ -112,9 +112,8 @@ module.exports = {
                                     }
                                 };
                                 try {
-                                    const result = await axios(options1);
-
-                                    const options = {
+                                    const result = await axios(options);
+                                    const options2 = {
                                         'method': 'PUT',
                                         'url': `http://localhost:8000/clientes/update/${datos.id_cliente}`,
                                         'headers': {
@@ -125,11 +124,28 @@ module.exports = {
                                         }
                                     };
                                     try {
-                                        const result = await axios(options);
-                                        console.log(result.data);
-                                        res.send(result.data + 'Utilizando la API de clientes')
+                                        const result = await axios(options2);
+                                        const options3 = {
+                                            'method': 'POST',
+                                            'url': `http://localhost:8081/api/registroCreate`, 
+                                            'headers': {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            data: {
+                                                id_clientes:  datos.id_cliente,
+                                                id_tipo_pagos: datos.id_tipo_pago
+                                            }
+                                        };
+                                        try {
+                                            const result = await axios(options3);
+                                            console.log(result.data);
+                                            res.send('Utilizando la API de Springboot')
+                                        } catch (e) {
+                                            console.log("Error con Spring");
+                                        }
+                                        
                                     } catch (e) {
-                                        console.log(e);
+                                        console.log("Error con fastapi");
                                     }
 
                                 } catch (e) {
